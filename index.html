@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Workers</title>
+</head>
+<body>
+    <header>
+        <h1>Web Workers</h1>
+        <h2>Click on me and wait 5 sek.</h2>
+    </header>
+    <main>
+        <span id="output"></span>
+    </main>    
+    <script>
+        let output = document.getElementById('output');
+        let worker;
+        
+        document.addEventListener('DOMContentLoaded', init);
+        
+        function init(){
+            worker = new Worker('webworker.js');
+            worker.addEventListener('message', workerMessaged);
+            worker.addEventListener('error', workerError);
+           
+            document.body.addEventListener('click', ()=>{
+                output.textContent = 'Opening web worker';
+                worker.postMessage('Wait 5 sek');
+            })
+        }
+        
+        function workerMessaged(ev){
+            let data = ev.data;
+            
+            output.textContent = data;
+        }
+        
+        function workerError(err){
+            console.log(err.message, err.filename);
+        }
+        
+    </script>
+</body>
+</html>
